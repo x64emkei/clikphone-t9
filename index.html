@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro T9 Communicator</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PeerJS (Open Source P2P Networking) -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'retro': ['"VT323"', 'monospace'],
+                        'tech': ['"Orbitron"', 'sans-serif'],
+                        'modern': ['"Roboto"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'inner-lg': 'inset 0 2px 10px 0 rgba(0, 0, 0, 0.3)',
+                        'btn': '0 4px 0 rgba(0,0,0,0.2)',
+                        'btn-press': '0 0 0 rgba(0,0,0,0)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE ANIMATIONS --- */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .cursor-blink { animation: blink 1s infinite; }
+        
+        @keyframes bootUp {
+            0% { opacity: 0; transform: scaleY(0); }
+            50% { opacity: 1; transform: scaleY(0.05); }
+            100% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* --- SCROLLBAR --- */
+        .scrollbar-hide::-webkit-scrollbar { width: 4px; }
+        .scrollbar-hide::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-hide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        
+        /* --- THEME ENGINE & BACKLIGHT SYSTEM --- */
+
+        /* Base Transitions */
+        .phone-body, .screen, .key, .key-content {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 1. PLASTIC BLUE (Nokia 3310 Style) */
+        [data-theme="plastic-blue"] .phone-body {
+            background: linear-gradient(160deg, #4c5fc0, #3e50b4);
+            border: 4px solid #2a3b8f; border-radius: 2.5rem;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2), 10px 10px 30px rgba(0,0,0,0.3);
+        }
+        [data-theme="plastic-blue"] .screen {
+            background-color: #9ea758; color: #222; font-family: 'VT323', monospace;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        /* Night Mode: Amber Backlight */
+        .dark [data-theme="plastic-blue"] .screen {
+            background-color: #b0bb64;
+            box-shadow: 0 0 20px #b0bb64, inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        .dark [data-theme="plastic-blue"] .key {
+            background: rgba(255,255,255,0.1) !important;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 5px rgba(255, 200, 0, 0.1);
+        }
+        .dark [data-theme="plastic-blue"] .key-content {
+            color: #ffd700; text-shadow: 0 0 8px #ff8c00, 0 0 2px #ffd700; opacity: 0.9;
+        }
+
+        /* 2. PLASTIC SILVER (Generic 2000s) */
+        [data-theme="plastic-silver"] .phone-body {
+            background: linear-gradient(135deg, #e2e2e2, #bfbfbf);
+            border: 3px solid #999; border-radius: 1.5rem;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 10px 10px 30px rgba(0,0,0,0.2);
+        }
+        [data-theme="plastic-silver"] .screen {
+            background-color: #c4dffa; color: #000; font-family: 'Roboto', sans-serif;
+        }
+        /* Night Mode: EL Blue Backlight */
+        .dark [data-theme="plastic-silver"] .screen {
+            background-color: #dbeeff;
+            box-shadow: 0 0 25px #4da6ff;
+        }
+        .dark [data-theme="plastic-silver"] .key {
+            background: rgba(0,0,0,0.2) !important;
+        }
+        .dark [data-theme="plastic-silver"] .key-content {
+            color: #00ffff; text-shadow: 0 0 8px #0000ff; opacity: 1;
+        }
+
+        /* 3. METAL SILVER (RAZR Style) */
+        [data-theme="metal-silver"] .phone-body {
+            background: linear-gradient(135deg, #f0f0f0 0%, #d7d7d7 50%, #aaaaaa 100%);
+            border: 2px solid #666; border-radius: 0.5rem;
+        }
+        [data-theme="metal-silver"] .screen {
+            background-color: #111; color: #00ff00; font-family: 'Orbitron', sans-serif;
+            border: 1px solid #333;
+        }
+        /* Night Mode: Hacker Green Glow */
+        .dark [data-theme="metal-silver"] .screen {
+            box-shadow: 0 0 15px #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            border-color: #00ff00;
+        }
+        .dark [data-theme="metal-silver"] .key {
+            border-bottom: 1px solid #00ff00;
+            background: #222 !important;
+        }
+        .dark [data-theme="metal-silver"] .key-content {
+            color: #00ff00; text-shadow: 0 0 5px #00ff00;
+        }
+
+        /* 4. METAL BLACK (Modern) */
+        [data-theme="metal-black"] .phone-body {
+            background: linear-gradient(135deg, #333 0%, #111 100%);
+            border: 2px solid #000; border-radius: 1.2rem;
+        }
+        [data-theme="metal-black"] .screen {
+            background-color: #000; color: #fff; font-family: 'Roboto', sans-serif;
+        }
+        /* Night Mode: White OLED */
+        .dark [data-theme="metal-black"] .screen {
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        .dark [data-theme="metal-black"] .key {
+            background: #111 !important; border: 1px solid #333;
+        }
+        .dark [data-theme="metal-black"] .key-content {
+            color: #fff; text-shadow: 0 0 8px #fff;
+        }
+
+    </style>
+</head>
+<body class="bg-slate-200 dark:bg-slate-900 flex flex-col items-center justify-center min-h-screen transition-colors duration-700 overflow-hidden selection:bg-transparent">
+
+    <!-- Instructions Overlay -->
+    <div class="fixed top-4 left-4 hidden xl:block z-20">
+        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur p-4 rounded-xl shadow-lg w-64 border border-gray-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-blue-600 dark:text-blue-400 font-bold mb-2 text-sm uppercase tracking-wider">Communicator Manual</h3>
+            <ul class="text-xs text-gray-600 dark:text-gray-400 space-y-1.5 font-mono">
+                <li>[NUMPAD] Type Message</li>
+                <li>[0] Space</li>
+                <li>[#] Send / New Line</li>
+                <li>[*] Shift Case</li>
+                <li class="pt-2 border-t dark:border-slate-600">📡 Connect: Generate ID</li>
+                <li>📟 Dial: Enter Friend's ID</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Controls Overlay -->
+    <div class="absolute top-4 right-4 flex flex-col gap-3 z-20 items-end">
+        <div class="flex gap-2">
+            <!-- Theme Selector -->
+            <select onchange="setTheme(this.value)" class="bg-white/90 dark:bg-slate-800 dark:text-white px-3 py-2 rounded-lg text-xs font-bold uppercase shadow-lg border-0 outline-none cursor-pointer hover:scale-105 transition-transform">
+                <option value="plastic-blue">Classic Blue</option>
+                <option value="plastic-silver">Retro Silver</option>
+                <option value="metal-silver">Cyber Steel</option>
+                <option value="metal-black">Obsidian</option>
+            </select>
+            
+            <!-- Dark Mode Toggle -->
+            <button onclick="toggleDarkMode()" class="bg-white/90 dark:bg-slate-800 p-2 rounded-lg shadow-lg hover:scale-110 transition-transform text-slate-800 dark:text-yellow-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Connection Status Notification -->
+    <div id="toast" class="fixed top-20 opacity-0 transition-opacity duration-300 bg-black/80 text-white px-4 py-2 rounded-full text-xs font-mono z-50 pointer-events-none">
+        Signal Acquired
+    </div>
+
+    <!-- The Phone Device -->
+    <div id="phone-wrapper" data-theme="plastic-blue" class="relative transition-all duration-300 scale-[0.85] sm:scale-100">
+        
+        <!-- Phone Chassis -->
+        <div class="phone-body w-[320px] h-[660px] p-5 relative flex flex-col gap-4">
+            
+            <!-- Ear Speaker / Brand -->
+            <div class="shrink-0 flex flex-col items-center gap-1 mt-1">
+                <div class="w-14 h-1.5 bg-black/20 dark:bg-black/40 rounded-full shadow-inner"></div>
+                <div class="text-[0.6rem] font-bold tracking-[0.3em] opacity-40 uppercase">Omni-Link</div>
+            </div>
+
+            <!-- Screen Bezel & LCD -->
+            <div class="bg-black/5 dark:bg-black/20 p-2 rounded-xl shrink-0 transition-colors">
+                <div id="lcd-screen" class="screen w-full h-[220px] rounded p-3 flex flex-col relative overflow-hidden">
+                    
+                    <!-- Boot Sequence Overlay (Hidden after load) -->
+                    <div id="boot-screen" class="absolute inset-0 z-10 flex items-center justify-center bg-inherit">
+                        <span class="text-xl animate-pulse font-bold">INITIALIZING...</span>
+                    </div>
+
+                    <!-- Status Bar -->
+                    <div class="flex justify-between items-center text-[10px] opacity-80 border-b border-current/20 pb-1 mb-2 shrink-0 font-bold">
+                        <div class="flex items-center gap-1">
+                            <div id="signal-icon" class="flex items-end gap-[1px] h-3">
+                                <div class="w-0.5 h-1 bg-current"></div>
+                                <div class="w-0.5 h-1.5 bg-current"></div>
+                                <div class="w-0.5 h-2 bg-current opacity-50"></div>
+                                <div class="w-0.5 h-2.5 bg-current opacity-30"></div>
+                            </div>
+                            <span id="net-status">OFFLINE</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="my-id-display" class="hidden font-mono px-1 border border-current/30 rounded text-[9px]">ID: ---</span>
+                            <span id="mode-display">abc</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat / Content Area -->
+                    <div id="content-area" class="flex-1 overflow-y-auto scrollbar-hide flex flex-col font-medium text-sm gap-1 pb-1">
+                        <div class="text-center opacity-50 mt-10 text-xs">
+                            <p>READY TO CONNECT</p>
+                            <p class="text-[9px] mt-2">Press MENU to Setup</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Line -->
+                    <div class="shrink-0 border-t border-current/20 pt-1 min-h-[1.5em] flex flex-wrap text-lg leading-none break-all relative">
+                         <span id="confirmed-text"></span><span id="pending-text" class="bg-current/20"></span><span class="cursor-blink w-[2px] h-[1em] bg-current ml-[1px] inline-block align-middle"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Function Keys -->
+            <div class="flex justify-between px-1 gap-3 shrink-0">
+                <button onclick="handleMenu()" class="flex-1 h-10 rounded-lg bg-white/90 shadow-btn active:shadow-btn-press active:translate-y-[2px] transition-all flex items-center justify-center font-bold text-[0.65rem] text-blue-800 tracking-wider uppercase group">
+                    <span class="group-active:scale-95 transition-transform">Menu / Connect</span>
+                </button>
+                <button onclick="handleInput('delete')" class="flex-1 h-10 rounded-lg bg-white/90 shadow-btn active:shadow-btn-press active:translate-y-[2px] transition-all flex items-center justify-center font-bold text-[0.65rem] text-red-700 tracking-wider uppercase group">
+                    <span class="group-active:scale-95 transition-transform">Clear / Back</span>
+                </button>
+            </div>
+
+            <!-- Keypad -->
+            <div class="grid grid-cols-3 gap-3 mt-auto mb-2 px-1">
+                <!-- Keys generated by JS for cleaner code -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Logic Modal (Simulated UI on Phone Screen normally, but using Overlay for clarity) -->
+    <dialog id="conn-modal" class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl backdrop:bg-black/50 text-center w-80 font-modern">
+        <h3 class="text-lg font-bold mb-4 dark:text-white">Radio Configuration</h3>
+        
+        <div class="mb-4">
+            <p class="text-xs text-gray-500 mb-1">YOUR FREQUENCY (ID)</p>
+            <div id="my-peer-id" class="font-mono text-xl font-bold tracking-widest bg-gray-100 dark:bg-slate-700 dark:text-blue-400 p-2 rounded select-all cursor-pointer" onclick="copyId()">...</div>
+        </div>
+
+        <div class="flex items-center gap-2 mb-4">
+            <div class="h-[1px] bg-gray-300 flex-1"></div>
+            <span class="text-xs text-gray-400">CONNECT TO</span>
+            <div class="h-[1px] bg-gray-300 flex-1"></div>
+        </div>
+
+        <input type="text" id="dest-peer-id" placeholder="Enter Target Frequency" class="w-full p-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded mb-4 font-mono text-center outline-none focus:ring-2 ring-blue-500 dark:text-white uppercase">
+
+        <div class="flex gap-2">
+            <button onclick="document.getElementById('conn-modal').close()" class="flex-1 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded">CANCEL</button>
+            <button onclick="initConnection()" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold text-sm shadow-lg">DIAL</button>
+        </div>
+    </dialog>
+
+    <script>
+        // --- 1. KEYPAD GENERATION ---
+        const keyData = [
+            { k: '1', s: '.,?!@' }, { k: '2', s: 'abc' }, { k: '3', s: 'def' },
+            { k: '4', s: 'ghi' }, { k: '5', s: 'jkl' }, { k: '6', s: 'mno' },
+            { k: '7', s: 'pqrs' }, { k: '8', s: 'tuv' }, { k: '9', s: 'wxyz' },
+            { k: '*', s: 'SHIFT' }, { k: '0', s: 'SPACE' }, { k: '#', s: 'SEND' }
+        ];
+        
+        const keypadGrid = document.querySelector('.grid');
+        keypadGrid.innerHTML = keyData.map(d => `
+            <button class="key h-12 rounded-lg bg-white/90 shadow-btn active:shadow-btn-press active:translate-y-[2px] transition-all flex flex-col items-center justify-center group select-none" onclick="handleInput('${d.k}')" data-key="${d.k}">
+                <div class="key-content flex flex-col items-center transition-all duration-500">
+                    <span class="text-xl font-bold leading-none">${d.k}</span>
+                    <span class="text-[0.5rem] font-bold opacity-60 tracking-widest mt-0.5">${d.s}</span>
+                </div>
+            </button>
+        `).join('');
+
+        // --- 2. T9 ENGINE ---
+        const keyMap = {
+            '1': ['.', ',', '?', '!', '@', '1'], '2': ['a', 'b', 'c', '2'], '3': ['d', 'e', 'f', '3'],
+            '4': ['g', 'h', 'i', '4'], '5': ['j', 'k', 'l', '5'], '6': ['m', 'n', 'o', '6'],
+            '7': ['p', 'q', 'r', 's', '7'], '8': ['t', 'u', 'v', '8'], '9': ['w', 'x', 'y', 'z', '9'],
+            '0': [' ', '0'], '*': [], '#': []
+        };
+
+        let state = {
+            text: "", pendingChar: "", lastKey: null, cycleIndex: 0, 
+            capsMode: 0, timer: null, peer: null, conn: null
+        };
+
+        function handleInput(key) {
+            visualFeedback(key);
+
+            if (key === 'delete' || key === 'Backspace') return deleteChar();
+            if (key === '#') return handleSendKey();
+            if (key === '*') return toggleCaps();
+
+            if (keyMap[key]) {
+                const chars = keyMap[key];
+                
+                if (state.lastKey === key && state.pendingChar) {
+                    clearTimeout(state.timer);
+                    state.cycleIndex = (state.cycleIndex + 1) % chars.length;
+                } else {
+                    commitChar();
+                    state.lastKey = key;
+                    state.cycleIndex = 0;
+                }
+
+                state.pendingChar = applyCaps(chars[state.cycleIndex]);
+                renderInput();
+                state.timer = setTimeout(commitChar, 800);
+            }
+        }
+
+        function commitChar() {
+            if (state.pendingChar) {
+                state.text += state.pendingChar;
+                state.pendingChar = "";
+                state.lastKey = null;
+                renderInput();
+            }
+        }
+
+        function deleteChar() {
+            if (state.pendingChar) {
+                state.pendingChar = "";
+                clearTimeout(state.timer);
+                state.lastKey = null;
+            } else {
+                state.text = state.text.slice(0, -1);
+            }
+            renderInput();
+        }
+
+        function toggleCaps() {
+            state.capsMode = !state.capsMode;
+            document.getElementById('mode-display').innerText = state.capsMode ? 'ABC' : 'abc';
+            if (state.pendingChar) {
+                state.pendingChar = applyCaps(state.pendingChar);
+                renderInput();
+            }
+        }
+
+        function applyCaps(c) { return state.capsMode ? c.toUpperCase() : c.toLowerCase(); }
+
+        function renderInput() {
+            document.getElementById('confirmed-text').innerText = state.text;
+            document.getElementById('pending-text').innerText = state.pendingChar;
+            const screen = document.getElementById('lcd-screen');
+            screen.scrollTop = screen.scrollHeight; // Auto scroll
+        }
+
+        function visualFeedback(key) {
+            const btn = document.querySelector(`button[data-key="${key}"]`);
+            if (btn) {
+                btn.classList.add('brightness-75', 'translate-y-[2px]', 'shadow-none');
+                setTimeout(() => btn.classList.remove('brightness-75', 'translate-y-[2px]', 'shadow-none'), 100);
+            }
+        }
+
+        // --- 3. PEERJS NETWORKING ---
+        
+        // Initialize Peer on Load
+        function initNetwork() {
+            // Generate a short readable ID for retro feel (Random 4 letters)
+            const shortId = 'TR-' + Math.floor(1000 + Math.random() * 9000);
+            
+            state.peer = new Peer(shortId);
+
+            state.peer.on('open', (id) => {
+                document.getElementById('net-status').innerText = "ONLINE";
+                document.getElementById('signal-icon').children[2].classList.remove('opacity-50');
+                document.getElementById('signal-icon').children[3].classList.remove('opacity-30');
+                
+                document.getElementById('boot-screen').style.display = 'none'; // Hide boot
+                document.getElementById('my-peer-id').innerText = id;
+                document.getElementById('my-id-display').innerText = id;
+                document.getElementById('my-id-display').classList.remove('hidden');
+                
+                showToast(`Frequency: ${id}`);
+            });
+
+            state.peer.on('connection', (conn) => {
+                setupConnection(conn);
+                showToast("Incoming Connection!");
+            });
+
+            state.peer.on('error', (err) => {
+                console.error(err);
+                document.getElementById('net-status').innerText = "ERR";
+            });
+        }
+
+        function handleMenu() {
+            document.getElementById('conn-modal').showModal();
+        }
+
+        function initConnection() {
+            const destId = document.getElementById('dest-peer-id').value.trim();
+            if (!destId) return;
+
+            const conn = state.peer.connect(destId);
+            setupConnection(conn);
+            document.getElementById('conn-modal').close();
+        }
+
+        function setupConnection(conn) {
+            state.conn = conn;
+            
+            conn.on('open', () => {
+                addLogMessage("SYSTEM", `LINK ESTABLISHED: ${conn.peer}`);
+                document.getElementById('net-status').innerText = "LINKED";
+            });
+
+            conn.on('data', (data) => {
+                addLogMessage(conn.peer, data);
+            });
+            
+            conn.on('close', () => {
+                addLogMessage("SYSTEM", "LINK LOST");
+                document.getElementById('net-status').innerText = "ONLINE";
+                state.conn = null;
+            });
+        }
+
+        function handleSendKey() {
+            commitChar();
+            const msg = state.text.trim();
+            if (!msg) return;
+
+            // Send to Peer if connected
+            if (state.conn && state.conn.open) {
+                state.conn.send(msg);
+                addLogMessage("ME", msg);
+                state.text = "";
+                renderInput();
+            } else {
+                // Offline Echo
+                addLogMessage("ME", msg);
+                setTimeout(() => addLogMessage("SYSTEM", "No Connection. Dial a frequency first."), 500);
+                state.text = "";
+                renderInput();
+            }
+        }
+
+        function addLogMessage(sender, text) {
+            const area = document.getElementById('content-area');
+            
+            // Clear "Ready to connect" placeholder if exists
+            if (area.children.length === 1 && area.children[0].classList.contains('text-center')) {
+                area.innerHTML = '';
+            }
+
+            const div = document.createElement('div');
+            const isMe = sender === "ME";
+            const isSys = sender === "SYSTEM";
+
+            div.className = `flex flex-col mb-2 ${isMe ? 'items-end' : 'items-start'} ${isSys ? 'items-center opacity-60 w-full' : ''}`;
+            
+            if (isSys) {
+                div.innerHTML = `<span class="text-[10px] uppercase tracking-widest border-b border-current/20">${text}</span>`;
+            } else {
+                div.innerHTML = `
+                    <span class="text-[9px] opacity-50 mb-0.5">${sender}</span>
+                    <span class="bg-current/10 px-2 py-1 rounded max-w-[90%] break-words">${text}</span>
+                `;
+            }
+
+            area.appendChild(div);
+            // Scroll container
+            const screen = document.getElementById('lcd-screen');
+            screen.scrollTop = screen.scrollHeight;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.remove('opacity-0');
+            setTimeout(() => t.classList.add('opacity-0'), 3000);
+        }
+
+        function copyId() {
+            const id = document.getElementById('my-peer-id').innerText;
+            navigator.clipboard.writeText(id);
+            showToast("Frequency Copied!");
+        }
+
+        // --- 4. UTILS ---
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function setTheme(theme) {
+            document.getElementById('phone-wrapper').setAttribute('data-theme', theme);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('conn-modal').open) return;
+            const k = e.key;
+            if (k >= '0' && k <= '9') handleInput(k);
+            else if (k === 'Backspace') handleInput('delete');
+            else if (k === 'Enter') handleInput('#');
+            else if (k === ' ') handleInput('0');
+            else if (k === '*') handleInput('*');
+            else if (['.', ','].includes(k)) handleInput('1');
+        });
+
+        // Start Up
+        window.addEventListener('load', () => {
+            setTimeout(initNetwork, 1500); // Simulate boot time
+        });
+
+    </script>
+</body>
+</html>
