@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@500;700;900&family=VT323&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -55,11 +55,19 @@
         /* --- SCROLLBAR --- */
         .scrollbar-hide::-webkit-scrollbar { width: 4px; }
         .scrollbar-hide::-webkit-scrollbar-track { background: transparent; }
-        .scrollbar-hide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
         
         /* --- THEME ENGINE --- */
+        :root {
+            --screen-height: 240px;
+        }
+
         .phone-body, .screen, .key, .key-content {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .screen {
+            height: var(--screen-height);
         }
 
         /* 1. PLASTIC BLUE (Backlight: Amber) */
@@ -67,24 +75,25 @@
             background: linear-gradient(160deg, #4c5fc0, #3e50b4);
             border: 4px solid #2a3b8f; border-radius: 2.5rem;
             box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2), 10px 10px 30px rgba(0,0,0,0.3);
+            height: 680px;
         }
         [data-theme="plastic-blue"] .screen {
-            background-color: #9ea758; color: #222; font-family: 'VT323', monospace;
+            background-color: #9ea758; color: #111; font-family: 'VT323', monospace;
             box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+            font-weight: bold; /* Increased readability */
         }
         .dark [data-theme="plastic-blue"] .screen {
             background-color: #b0bb64; 
-            box-shadow: 0 0 30px rgba(176, 187, 100, 0.6); /* Screen Bloom */
+            box-shadow: 0 0 30px rgba(176, 187, 100, 0.6); 
             border: 1px solid rgba(0,0,0,0.2);
         }
         .dark [data-theme="plastic-blue"] .key-content {
-            color: #ffcc00; text-shadow: 0 0 10px #ffaa00; /* Amber Glow */
+            color: #ffcc00; text-shadow: 0 0 10px #ffaa00; 
         }
         .dark [data-theme="plastic-blue"] .key {
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(255, 200, 0, 0.1);
         }
-        .dark [data-theme="plastic-blue"] .loading-spinner { border-color: #222; border-top-color: transparent; }
 
 
         /* 2. PLASTIC SILVER (Backlight: EL Blue) */
@@ -92,66 +101,150 @@
             background: linear-gradient(135deg, #e2e2e2, #bfbfbf);
             border: 3px solid #999; border-radius: 1.5rem;
             box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 10px 10px 30px rgba(0,0,0,0.2);
+            height: 680px;
         }
         [data-theme="plastic-silver"] .screen {
             background-color: #c4dffa; color: #000; font-family: 'Roboto', sans-serif;
+            font-weight: 700;
         }
         .dark [data-theme="plastic-silver"] .screen {
             background-color: #dbeeff; 
-            box-shadow: 0 0 35px rgba(77, 166, 255, 0.7); /* Blue Bloom */
+            box-shadow: 0 0 35px rgba(77, 166, 255, 0.7);
         }
         .dark [data-theme="plastic-silver"] .key-content {
-            color: #00ffff; text-shadow: 0 0 8px #0088ff; /* EL Blue Glow */
+            color: #00ffff; text-shadow: 0 0 8px #0088ff; 
         }
         .dark [data-theme="plastic-silver"] .key {
             background: rgba(0, 0, 0, 0.6);
         }
-        .dark [data-theme="plastic-silver"] .loading-spinner { border-color: #000; border-top-color: transparent; }
 
 
         /* 3. METAL SILVER (Backlight: Cyber Green) */
         [data-theme="metal-silver"] .phone-body {
             background: linear-gradient(135deg, #f0f0f0 0%, #d7d7d7 50%, #aaaaaa 100%);
             border: 2px solid #666; border-radius: 0.5rem;
+            height: 680px;
         }
         [data-theme="metal-silver"] .screen {
             background-color: #111; color: #00ff00; font-family: 'Orbitron', sans-serif; border: 1px solid #333;
         }
         .dark [data-theme="metal-silver"] .screen {
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Green Bloom */
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); 
             text-shadow: 0 0 5px #00ff00; border-color: #00ff00;
         }
         .dark [data-theme="metal-silver"] .key-content {
-            color: #00ff00; text-shadow: 0 0 8px #00ff00; /* Matrix Green Glow */
+            color: #00ff00; text-shadow: 0 0 8px #00ff00; 
         }
         .dark [data-theme="metal-silver"] .key {
             background: #1a1a1a;
             border-bottom: 2px solid #00ff00;
         }
-        .dark [data-theme="metal-silver"] .loading-spinner { border-color: #00ff00; border-top-color: transparent; }
 
 
         /* 4. METAL BLACK (Backlight: White LED) */
         [data-theme="metal-black"] .phone-body {
             background: linear-gradient(135deg, #333 0%, #111 100%);
             border: 2px solid #000; border-radius: 1.2rem;
+            height: 680px;
         }
         [data-theme="metal-black"] .screen {
             background-color: #000; color: #fff; font-family: 'Roboto', sans-serif;
         }
         .dark [data-theme="metal-black"] .screen {
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4); /* White Bloom */
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4); 
         }
         .dark [data-theme="metal-black"] .key-content {
-            color: #ffffff; text-shadow: 0 0 10px #ffffff; /* White Glow */
+            color: #ffffff; text-shadow: 0 0 10px #ffffff;
         }
         .dark [data-theme="metal-black"] .key {
             background: #000;
             border: 1px solid #333;
         }
-        .dark [data-theme="metal-black"] .loading-spinner { border-color: #fff; border-top-color: transparent; }
 
-        /* Nav Key Styling */
+        /* 5. MULTIMEDIA (Nokia 6630/230 Vibe) */
+        [data-theme="multimedia"] .phone-body {
+            background: linear-gradient(180deg, #f8f9fa 0%, #dcdcdc 100%);
+            border: 3px solid #bbb;
+            border-radius: 20px 20px 45px 45px;
+            width: 340px; 
+            height: 760px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2), inset 0 2px 10px rgba(255,255,255,0.8);
+        }
+        [data-theme="multimedia"] .screen {
+            --screen-height: 320px;
+            background-color: #f0f0f0; color: #111; font-family: 'Roboto', sans-serif;
+            border: 1px solid #ccc;
+            font-weight: 700;
+        }
+        .dark [data-theme="multimedia"] .screen {
+            background-color: #1a1a1a; color: #fff;
+            box-shadow: 0 0 40px rgba(255,255,255,0.1);
+            border: 1px solid #333;
+        }
+        [data-theme="multimedia"] .key {
+            border-radius: 20px; 
+            background: linear-gradient(to bottom, #fff, #eee);
+            box-shadow: 0 2px 0 #ccc;
+            margin: 2px;
+        }
+        .dark [data-theme="multimedia"] .key {
+            background: #333;
+            box-shadow: 0 2px 0 #111;
+            border: 1px solid #444;
+        }
+        .dark [data-theme="multimedia"] .key-content {
+            color: #fff; text-shadow: 0 0 5px #fff;
+        }
+
+        /* 6. CALCULATOR (ClassWiz Style) */
+        [data-theme="calculator"] .phone-body {
+            /* Carbon fiber-ish texture */
+            background-color: #1a1a1a;
+            background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px);
+            border: none;
+            border-radius: 10px;
+            width: 340px;
+            height: 700px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        [data-theme="calculator"] .screen {
+            background-color: #e8f4f8; 
+            color: #000; 
+            font-family: 'Roboto', sans-serif;
+            font-weight: 900;
+            border-left: 8px solid #000;
+            border-top: 4px solid #000;
+            border-radius: 2px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .dark [data-theme="calculator"] .screen {
+            background-color: #f0f8ff; /* Stays bright like a calculator LCD */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        /* Calc Keys */
+        [data-theme="calculator"] .key {
+            border-radius: 4px;
+            box-shadow: 0 2px 0 #000;
+            background: #fff; /* White number keys */
+            margin: 3px;
+            border: 1px solid #ccc;
+        }
+        [data-theme="calculator"] .key-content span:first-child {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 900;
+        }
+        [data-theme="calculator"] .key-content span:last-child {
+            color: #0055aa; /* Blue function text */
+            font-weight: 700;
+        }
+        /* Special colors for calc theme */
+        [data-theme="calculator"] .nav-key {
+            background: #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 0 #999;
+        }
+        
+        /* Nav Key Styling Default */
         .nav-key {
             background: rgba(255,255,255,0.9);
             border-radius: 6px;
@@ -160,36 +253,33 @@
         }
         .dark .nav-key {
             background: rgba(0,0,0,0.5);
-            color: inherit; /* Inherit backlight color */
+            color: inherit; 
             box-shadow: 0 3px 0 rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.1);
         }
-        /* Apply backlight to Nav keys too */
+        
+        /* Common Dark Mode Nav Glows */
         .dark [data-theme="plastic-blue"] .nav-key { color: #ffcc00; text-shadow: 0 0 5px #ffaa00; }
         .dark [data-theme="plastic-silver"] .nav-key { color: #00ffff; text-shadow: 0 0 5px #00ffff; }
         .dark [data-theme="metal-silver"] .nav-key { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
         .dark [data-theme="metal-black"] .nav-key { color: #fff; text-shadow: 0 0 5px #fff; }
+        .dark [data-theme="calculator"] .nav-key { color: #fff; text-shadow: 0 0 5px #fff; background: #333; }
 
-        .nav-key:active {
-            transform: translateY(2px);
-            box-shadow: none;
-        }
+        .nav-key:active { transform: translateY(2px); box-shadow: none; }
         
-        /* Menu Item Selection */
         .menu-item.selected {
             background-color: rgba(0,0,0,0.1);
-            font-weight: bold;
+            font-weight: 900;
         }
         .dark .menu-item.selected {
             background-color: rgba(255,255,255,0.2);
         }
-
     </style>
 </head>
 <body class="bg-slate-200 dark:bg-slate-900 flex flex-col items-center justify-center min-h-screen transition-colors duration-700 overflow-hidden select-none">
 
-    <!-- Toast Notification (Top) -->
-    <div id="toast" class="fixed top-10 opacity-0 transition-opacity duration-300 bg-black/80 text-white px-4 py-2 rounded-full text-xs font-mono z-50 pointer-events-none border border-white/20">
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-10 opacity-0 transition-opacity duration-300 bg-black/90 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xl z-50 pointer-events-none border border-white/20">
         System Ready
     </div>
 
@@ -197,7 +287,7 @@
     <div id="phone-wrapper" data-theme="plastic-blue" class="relative transition-all duration-300 scale-[0.85] sm:scale-100">
         
         <!-- Phone Chassis -->
-        <div class="phone-body w-[320px] h-[680px] p-5 relative flex flex-col gap-4">
+        <div class="phone-body w-[320px] p-5 relative flex flex-col gap-4">
             
             <!-- Ear Speaker -->
             <div class="shrink-0 flex flex-col items-center gap-1 mt-1">
@@ -207,7 +297,7 @@
 
             <!-- LCD Screen -->
             <div class="bg-black/5 dark:bg-black/20 p-2 rounded-xl shrink-0 transition-colors">
-                <div id="lcd-screen" class="screen w-full h-[240px] rounded p-3 flex flex-col relative overflow-hidden scanline">
+                <div id="lcd-screen" class="screen w-full rounded p-3 flex flex-col relative overflow-hidden scanline transition-all duration-300">
                     
                     <!-- Status Bar -->
                     <div class="flex justify-between items-center text-[10px] opacity-80 border-b border-current/20 pb-1 mb-1 shrink-0 font-bold z-10">
@@ -220,7 +310,7 @@
                         </div>
                     </div>
 
-                    <!-- SCREEN: BOOT (Overlay) -->
+                    <!-- SCREEN: BOOT -->
                     <div id="screen-boot" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-inherit">
                         <span class="text-2xl animate-pulse font-bold tracking-widest">OMNI</span>
                         <span class="text-xs tracking-[0.5em] mt-2">SYSTEMS</span>
@@ -229,44 +319,55 @@
                         </div>
                     </div>
 
-                    <!-- SCREEN: CHAT (Default) -->
+                    <!-- SCREEN: CHAT -->
                     <div id="screen-chat" class="flex-1 flex flex-col overflow-hidden relative">
-                         <!-- Messages Log -->
-                         <div id="chat-log" class="flex-1 overflow-y-auto scrollbar-hide flex flex-col gap-2 pb-1 text-sm font-medium">
-                             <div class="text-center opacity-50 mt-8 text-xs">
-                                 <p>NO CONNECTION</p>
-                                 <p class="text-[9px] mt-1">Press MENU to Connect</p>
+                         <div id="chat-log" class="flex-1 overflow-y-auto scrollbar-hide flex flex-col gap-2 pb-1 text-sm font-bold leading-snug">
+                             <div class="text-center opacity-60 mt-8 text-xs font-normal">
+                                 <p>DISCONNECTED</p>
+                                 <p class="text-[10px] mt-1">Select RADIO to Connect</p>
                              </div>
                          </div>
-                         <!-- Input Area -->
-                         <div class="shrink-0 border-t border-current/20 pt-1 min-h-[1.5em] flex flex-wrap text-lg leading-none break-all relative bg-inherit z-10">
-                             <span id="confirmed-text"></span><span id="pending-text" class="bg-current/20"></span><span class="cursor-blink w-[2px] h-[1em] bg-current ml-[1px] inline-block align-middle"></span>
+                         <div class="shrink-0 border-t-2 border-current/20 pt-1 min-h-[1.5em] flex flex-wrap text-lg font-bold leading-none break-all relative bg-inherit z-10">
+                             <span id="confirmed-text"></span><span id="pending-text" class="bg-current/20"></span><span class="cursor-blink w-[3px] h-[1em] bg-current ml-[1px] inline-block align-middle"></span>
                         </div>
                     </div>
 
-                    <!-- SCREEN: MENU (Hidden) -->
-                    <div id="screen-menu" class="absolute inset-0 z-20 bg-inherit flex flex-col hidden p-2 pt-6">
-                        <div class="text-center font-bold border-b border-current/30 pb-1 mb-2">MAIN MENU</div>
-                        <div id="menu-list" class="flex-1 flex flex-col gap-1 overflow-y-auto text-sm">
+                    <!-- SCREEN: MENU -->
+                    <div id="screen-menu" class="absolute inset-0 z-20 bg-inherit flex flex-col hidden p-2 pt-4">
+                        <div class="text-center font-black border-b-2 border-current/30 pb-1 mb-2 tracking-widest text-lg">MENU</div>
+                        <div id="menu-list" class="flex-1 flex flex-col gap-1 overflow-y-auto text-sm font-bold">
                             <!-- JS Injects Items Here -->
                         </div>
                     </div>
 
-                    <!-- SCREEN: DIALER (Hidden) -->
-                    <div id="screen-dialer" class="absolute inset-0 z-20 bg-inherit flex flex-col hidden p-2 pt-6 items-center">
-                        <div class="text-xs opacity-60 mb-1">ENTER FREQUENCY</div>
-                        <div id="dial-input" class="text-2xl font-mono border-b-2 border-current w-full text-center py-2 mb-4 tracking-widest"></div>
-                        <div class="text-[10px] opacity-50 text-center">Enter 5-digit ID</div>
+                    <!-- SCREEN: DIALER (COMBINED ID & INPUT) -->
+                    <div id="screen-dialer" class="absolute inset-0 z-20 bg-inherit flex flex-col hidden p-4 pt-6 items-center">
+                        <!-- My ID Section -->
+                        <div class="w-full bg-current/5 p-2 rounded mb-4 text-center border border-current/20">
+                            <div class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">MY FREQUENCY</div>
+                            <div id="my-id-display" class="text-xl font-mono font-black tracking-widest select-all">-----</div>
+                        </div>
+
+                        <!-- Target Input Section -->
+                        <div class="w-full text-center">
+                            <div class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">TARGET FREQUENCY</div>
+                            <div id="dial-input" class="text-3xl font-mono font-black border-b-4 border-current w-full text-center py-2 mb-2 tracking-widest"></div>
+                        </div>
                     </div>
 
-                    <!-- SCREEN: CONNECTING (Hidden) -->
+                    <!-- SCREEN: CONNECTING -->
                     <div id="screen-connecting" class="absolute inset-0 z-30 bg-inherit flex flex-col hidden items-center justify-center">
                         <div class="loading-spinner w-8 h-8 border-4 rounded-full animate-spin mb-4"></div>
                         <div class="text-sm font-bold animate-pulse">CONNECTING...</div>
-                        <div id="conn-target" class="text-xs font-mono mt-2 opacity-60">ID: ---</div>
+                    </div>
+                    
+                    <!-- SCREEN: CONNECTED CONFIRM -->
+                    <div id="screen-confirmed" class="absolute inset-0 z-30 bg-inherit flex flex-col hidden items-center justify-center">
+                        <div class="text-4xl mb-2">🤝</div>
+                        <div class="text-lg font-black tracking-widest">LINKED!</div>
                     </div>
 
-                    <!-- Soft Keys Bar (Bottom of Screen) -->
+                    <!-- Soft Keys Bar -->
                     <div class="absolute bottom-0 left-0 right-0 h-6 bg-current/10 flex justify-between items-center px-2 text-[10px] font-bold uppercase z-40 backdrop-blur-[1px]">
                         <span id="soft-left-label">Menu</span>
                         <span id="mode-label" class="opacity-50 font-normal lowercase">abc</span>
@@ -277,19 +378,14 @@
             </div>
 
             <!-- Navigation Controls -->
-            <div class="grid grid-cols-3 gap-3 px-1 h-12 shrink-0">
-                <!-- Left Soft Key -->
+            <div class="grid grid-cols-3 gap-3 px-1 h-12 shrink-0 py-2 mb-1">
                 <button onclick="handleSoftLeft()" class="nav-key flex items-center justify-center font-bold text-xs uppercase tracking-wider">
                     <div class="w-4 h-1 bg-current opacity-50 rounded-full"></div>
                 </button>
-                
-                <!-- D-Pad (Up/Down) -->
                 <div class="flex flex-col gap-1">
                     <button onclick="handleNav('UP')" class="nav-key flex-1 flex items-center justify-center text-[10px]">▲</button>
                     <button onclick="handleNav('DOWN')" class="nav-key flex-1 flex items-center justify-center text-[10px]">▼</button>
                 </div>
-
-                <!-- Right Soft Key -->
                 <button onclick="handleSoftRight()" class="nav-key flex items-center justify-center font-bold text-xs uppercase tracking-wider">
                     <div class="w-4 h-1 bg-current opacity-50 rounded-full"></div>
                 </button>
@@ -303,7 +399,7 @@
     </div>
 
     <script>
-        // --- SOUND ENGINE (Web Audio API) ---
+        // --- SOUND ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         const SoundEngine = {
@@ -313,7 +409,7 @@
                 const gain = audioCtx.createGain();
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Low volume
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
@@ -330,12 +426,10 @@
                 setTimeout(() => SoundEngine.playTone(200, 'square', 0.2), 100);
             },
             msgReceived: () => {
-                // Classic SMS double beep
                 SoundEngine.playTone(800, 'square', 0.08);
                 setTimeout(() => SoundEngine.playTone(1200, 'square', 0.08), 150);
             },
             msgSent: () => {
-                // Swoosh up
                 SoundEngine.playTone(600, 'sine', 0.1);
                 setTimeout(() => SoundEngine.playTone(1200, 'sine', 0.2), 80);
             }
@@ -343,7 +437,7 @@
 
         // --- STATE MANAGEMENT ---
         const State = {
-            mode: 'BOOT', // BOOT, CHAT, MENU, DIALER, CONNECTING
+            mode: 'BOOT',
             text: "",
             pendingChar: "",
             lastKey: null,
@@ -352,20 +446,18 @@
             dialBuffer: "",
             peer: null,
             conn: null,
-            myId: null,
+            myId: "...",
             themeIndex: 0
         };
 
-        const THEMES = ['plastic-blue', 'plastic-silver', 'metal-silver', 'metal-black'];
+        const THEMES = ['plastic-blue', 'plastic-silver', 'metal-silver', 'metal-black', 'multimedia', 'calculator'];
         const MENU_ITEMS = [
-            { label: 'Connect (Dial)', action: 'GOTO_DIALER' },
-            { label: 'My Frequency', action: 'SHOW_ID' },
+            { label: 'Radio / Connect', action: 'GOTO_DIALER' }, // Combined
             { label: 'Toggle Theme', action: 'TOGGLE_THEME' },
             { label: 'Dark Mode', action: 'TOGGLE_DARK' },
-            { label: 'Reset Radio', action: 'RESET_NET' }
+            { label: 'Reset Signal', action: 'RESET_NET' }
         ];
 
-        // --- KEYPAD DATA ---
         const keyData = [
             { k: '1', s: '.,?!' }, { k: '2', s: 'abc' }, { k: '3', s: 'def' },
             { k: '4', s: 'ghi' }, { k: '5', s: 'jkl' }, { k: '6', s: 'mno' },
@@ -375,7 +467,6 @@
 
         // --- INIT ---
         window.onload = () => {
-            // Generate Keys
             const grid = document.querySelector('.grid.mt-auto');
             grid.innerHTML = keyData.map(d => `
                 <button class="key h-12 rounded-lg bg-white/90 shadow-btn active:shadow-btn-press active:translate-y-[2px] transition-all flex flex-col items-center justify-center group select-none" onclick="handleKey('${d.k}')" data-key="${d.k}">
@@ -386,7 +477,6 @@
                 </button>
             `).join('');
 
-            // Boot Sequence
             setTimeout(() => {
                 document.getElementById('screen-boot').classList.add('hidden');
                 State.mode = 'CHAT';
@@ -399,17 +489,20 @@
         function initPeer() {
             if(State.peer) State.peer.destroy();
             
-            // Numeric 5 digit ID
             const numericId = Math.floor(10000 + Math.random() * 90000);
-            State.peer = new Peer(numericId.toString(), { debug: 1 });
+            State.peer = new Peer(numericId.toString());
 
             State.peer.on('open', (id) => {
                 State.myId = id;
+                document.getElementById('my-id-display').innerText = id; // For Dialer Screen
                 document.getElementById('net-status').innerText = "RDY";
-                showToast(`Radio Active: ${id}`);
+                showToast(`Frequency: ${id}`);
             });
 
             State.peer.on('connection', (conn) => {
+                // Ensure only one connection active
+                if(State.conn) State.conn.close();
+                
                 setupConnection(conn);
                 SoundEngine.msgReceived();
                 showToast(`Incoming: ${conn.peer}`);
@@ -418,12 +511,8 @@
             State.peer.on('error', (err) => {
                 console.error(err);
                 document.getElementById('net-status').innerText = "ERR";
-                showToast("Network Error");
-                // Return to chat if stuck connecting
-                if(State.mode === 'CONNECTING') {
-                    State.mode = 'DIALER'; // Go back to try again
-                    renderUI();
-                }
+                showToast("Network Error - Retrying");
+                setTimeout(initPeer, 3000); // Auto Retry
             });
         }
 
@@ -434,18 +523,16 @@
                 return;
             }
 
-            // Force visual loading state
             State.mode = 'CONNECTING';
-            document.getElementById('conn-target').innerText = `ID: ${targetId}`;
             renderUI();
             SoundEngine.confirm();
 
+            // Close existing
+            if(State.conn) State.conn.close();
+
             const conn = State.peer.connect(targetId);
             
-            // Add minimum artificial delay so loading screen is visible and satisfying
-            const minDelayPromise = new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Timeout failsafe
+            // Connection Timeout 
             const failTimer = setTimeout(() => {
                 if(State.mode === 'CONNECTING') {
                     showToast("Connection Timeout");
@@ -455,18 +542,26 @@
                 }
             }, 8000);
 
+            // Fake delay for UI satisfaction
+            const delay = new Promise(r => setTimeout(r, 1500));
+
             conn.on('open', async () => {
-                await minDelayPromise; // Wait for animation
+                await delay;
                 clearTimeout(failTimer);
                 
-                setupConnection(conn);
-                State.mode = 'CHAT';
-                renderUI();
-                SoundEngine.confirm();
-                showToast(`Linked to ${targetId}`);
+                // Show Confirmation
+                document.getElementById('screen-connecting').classList.add('hidden');
+                document.getElementById('screen-confirmed').classList.remove('hidden');
+                SoundEngine.msgReceived(); // Triumph sound
+                
+                setTimeout(() => {
+                    document.getElementById('screen-confirmed').classList.add('hidden');
+                    setupConnection(conn);
+                    State.mode = 'CHAT';
+                    renderUI();
+                }, 1500);
             });
             
-            // Handle immediate connection errors
             conn.on('error', () => {
                 clearTimeout(failTimer);
                 State.mode = 'DIALER';
@@ -481,19 +576,19 @@
             
             // Clear offline msg
             const log = document.getElementById('chat-log');
-            if(log.innerText.includes("NO CONNECTION")) log.innerHTML = "";
+            if(log.innerText.includes("DISCONNECTED")) log.innerHTML = "";
             
-            addSystemMsg(`LINK ESTABLISHED: ${conn.peer}`);
+            addSystemMsg(`LINKED TO: ${conn.peer}`);
 
             conn.on('data', (data) => {
-                addMessage(conn.peer, data, false);
+                addMessage("PARTNER", data, false);
                 SoundEngine.msgReceived();
             });
 
             conn.on('close', () => {
                 State.conn = null;
                 document.getElementById('net-status').innerText = "RDY";
-                addSystemMsg("LINK LOST");
+                addSystemMsg("SIGNAL LOST");
                 SoundEngine.cancel();
             });
         }
@@ -512,12 +607,8 @@
                         State.dialBuffer += k;
                         renderUI();
                     }
-                } else if (k === '#' || k === '*') {
-                    // Ignore or maybe use as delete?
-                }
-            } else if (State.mode === 'MENU') {
-                // Number shortcuts for menu? optional.
-                // For now, use nav keys.
+                } 
+                // Don't handle special keys here, wait for Soft Keys
             }
         }
 
@@ -541,7 +632,7 @@
                     SoundEngine.msgSent();
                 } else {
                     addMessage("ME", msg, true);
-                    setTimeout(() => addSystemMsg("Not Connected"), 500);
+                    setTimeout(() => addSystemMsg("Signal Failed"), 500);
                     SoundEngine.cancel();
                 }
                 State.text = "";
@@ -556,6 +647,13 @@
                 }
                 renderUI();
                 return;
+            }
+            
+            if(k === '0') {
+                 commitChar();
+                 State.text += " ";
+                 renderUI();
+                 return;
             }
 
             const chars = t9Map[k];
@@ -586,8 +684,7 @@
 
         function applyCaps(c) { return State.capsMode ? c.toUpperCase() : c.toLowerCase(); }
 
-        // --- NAVIGATION HANDLERS ---
-
+        // --- NAV HANDLERS ---
         function handleSoftLeft() {
             SoundEngine.click();
             if (State.mode === 'CHAT') {
@@ -607,6 +704,7 @@
                 if(State.pendingChar) {
                     State.pendingChar = "";
                     State.lastKey = null;
+                    clearTimeout(t9Timer);
                 } else if(State.text.length > 0) {
                     State.text = State.text.slice(0, -1);
                 }
@@ -642,10 +740,6 @@
             if(action === 'GOTO_DIALER') {
                 State.mode = 'DIALER';
                 State.dialBuffer = "";
-            } else if (action === 'SHOW_ID') {
-                showToast(`My ID: ${State.myId}`);
-                addSystemMsg(`MY ID: ${State.myId}`);
-                State.mode = 'CHAT';
             } else if (action === 'TOGGLE_THEME') {
                 State.themeIndex = (State.themeIndex + 1) % THEMES.length;
                 document.getElementById('phone-wrapper').setAttribute('data-theme', THEMES[State.themeIndex]);
@@ -659,19 +753,16 @@
         }
 
         // --- RENDER ---
-
         function scrollToBottom() {
              const log = document.getElementById('chat-log');
              log.scrollTop = log.scrollHeight;
         }
 
         function renderUI() {
-            // Hide all screens first
-            ['chat', 'menu', 'dialer', 'connecting'].forEach(id => {
+            ['chat', 'menu', 'dialer', 'connecting', 'confirmed'].forEach(id => {
                 document.getElementById(`screen-${id}`).classList.add('hidden');
             });
 
-            // Status Bar Labels
             const softL = document.getElementById('soft-left-label');
             const softR = document.getElementById('soft-right-label');
             const modeLbl = document.getElementById('mode-label');
@@ -684,7 +775,6 @@
                 softL.innerText = "Menu";
                 softR.innerText = "Clear";
                 modeLbl.innerText = State.capsMode ? "ABC" : "abc";
-                
                 scrollToBottom();
 
             } else if (State.mode === 'MENU') {
@@ -695,7 +785,7 @@
 
                 const list = document.getElementById('menu-list');
                 list.innerHTML = MENU_ITEMS.map((item, idx) => `
-                    <div class="menu-item px-2 py-1 ${idx === State.menuIndex ? 'selected border border-current/30' : ''}">
+                    <div class="menu-item px-2 py-2 ${idx === State.menuIndex ? 'selected border border-current/30' : ''}">
                         ${item.label}
                     </div>
                 `).join('');
@@ -703,7 +793,7 @@
             } else if (State.mode === 'DIALER') {
                 document.getElementById('screen-dialer').classList.remove('hidden');
                 document.getElementById('dial-input').innerText = State.dialBuffer + (State.dialBuffer.length < 5 ? "_" : "");
-                softL.innerText = "Dial";
+                softL.innerText = "Connect";
                 softR.innerText = State.dialBuffer.length > 0 ? "Del" : "Back";
                 modeLbl.innerText = "123";
 
@@ -719,7 +809,7 @@
             const div = document.createElement('div');
             div.className = `flex flex-col mb-2 ${isMe ? 'items-end' : 'items-start'}`;
             div.innerHTML = `
-                <span class="text-[9px] opacity-50 mb-0.5 uppercase">${sender}</span>
+                <span class="text-[9px] opacity-70 mb-0.5 uppercase font-bold tracking-wider">${sender}</span>
                 <span class="bg-current/10 px-2 py-1 rounded max-w-[90%] break-words border-l-2 ${isMe ? 'border-r-2 border-l-0 border-current/50' : 'border-current/50'}">${text}</span>
             `;
             log.appendChild(div);
@@ -729,7 +819,7 @@
         function addSystemMsg(text) {
             const log = document.getElementById('chat-log');
             const div = document.createElement('div');
-            div.className = "text-center opacity-60 text-[10px] my-2 border-b border-current/20 pb-1";
+            div.className = "text-center opacity-70 text-[10px] my-2 border-b border-current/20 pb-1 font-bold";
             div.innerText = text;
             log.appendChild(div);
             scrollToBottom();
@@ -750,15 +840,15 @@
             }
         }
 
-        // Global Key Listener for physical keyboard
         document.addEventListener('keydown', (e) => {
             const k = e.key;
+            if (k === ' ' || k === 'ArrowUp' || k === 'ArrowDown') e.preventDefault();
             if (k >= '0' && k <= '9') handleKey(k);
-            else if (k === 'Backspace') handleSoftRight(); // Map Backspace to 'Clear/Back'
-            else if (k === 'Enter') handleSoftLeft(); // Map Enter to 'Menu/Select'
+            else if (k === 'Backspace') handleSoftRight();
+            else if (k === 'Enter') handleSoftLeft();
             else if (k === '#') handleKey('#');
             else if (k === ' ') handleKey('0');
-            else if (k === '*') handleKey('*');
+            else if (k === '*' || k === 'Shift') handleKey('*');
             else if (k === 'ArrowUp') handleNav('UP');
             else if (k === 'ArrowDown') handleNav('DOWN');
             else if (['.', ','].includes(k)) handleKey('1');
